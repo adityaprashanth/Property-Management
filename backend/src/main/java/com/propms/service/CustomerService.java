@@ -1,0 +1,32 @@
+package com.propms.service;
+
+import com.propms.entity.Customer;
+import com.propms.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+// @RequiredArgsConstructor
+public class CustomerService {
+
+    private final CustomerRepository customerRepository;
+
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
+    public Customer getById(Integer id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found: " + id));
+    }
+
+    public Customer update(Integer id, Customer updates) {
+        Customer existing = getById(id);
+        if (updates.getFirstname() != null) existing.setFirstname(updates.getFirstname());
+        if (updates.getLastname()  != null) existing.setLastname(updates.getLastname());
+        if (updates.getAddress()   != null) existing.setAddress(updates.getAddress());
+        if (updates.getPhoneNo()   != null) existing.setPhoneNo(updates.getPhoneNo());
+        if (updates.getHowPaid()   != null) existing.setHowPaid(updates.getHowPaid());
+        return customerRepository.save(existing);
+    }
+}
