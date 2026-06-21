@@ -1,212 +1,711 @@
-// src/pages/AdminDashboard.jsx
+// // // src/pages/AdminDashboard.jsx
+
+// // import React, { useState } from "react";
+// // import { useNavigate } from "react-router-dom";
+// // import { createCustomer, searchCustomer } from "../api";
+// // import "./AdminDashboard.css";
+
+// // export default function AdminDashboard() {
+
+// //   const navigate = useNavigate();
+
+// //   const [activeTab, setActiveTab] = useState("dashboard");
+
+// //   const [searchText, setSearchText] = useState("");
+// //   const [customers, setCustomers] = useState([]);
+
+// //   const [customerForm, setCustomerForm] = useState({
+// //     firstname: "",
+// //     lastname: "",
+// //     email: "",
+// //     phoneNo: "",
+// //     password: "",
+// //     address: ""
+// //   });
+
+// //   const logout = () => {
+// //     localStorage.clear();
+// //     navigate("/");
+// //   };
+
+// //   const handleCustomerChange = (e) => {
+// //     setCustomerForm({
+// //       ...customerForm,
+// //       [e.target.name]: e.target.value
+// //     });
+// //   };
+
+// //   const handleCreateCustomer = async (e) => {
+// //     e.preventDefault();
+
+// //     try {
+
+// //       await createCustomer(customerForm);
+
+// //       alert("Customer created successfully");
+
+// //       setCustomerForm({
+// //         firstname: "",
+// //         lastname: "",
+// //         email: "",
+// //         phoneNo: "",
+// //         password: "",
+// //         address: ""
+// //       });
+
+// //     } catch (err) {
+
+// //       console.error(err);
+
+// //       alert(
+// //         err.response?.data?.error ||
+// //         "Failed to create customer"
+// //       );
+// //     }
+// //   };
+
+// //   const handleSearch = async (e) => {
+
+// //     const value = e.target.value;
+
+// //     setSearchText(value);
+
+// //     if (!value.trim()) {
+// //       setCustomers([]);
+// //       return;
+// //     }
+
+// //     try {
+
+// //       const response = await searchCustomer(value);
+
+// //       setCustomers(response.data);
+
+// //     } catch (err) {
+
+// //       console.error(err);
+
+// //     }
+// //   };
+
+// //   return (
+// //     <div className="admin-container">
+
+// //       {/* Sidebar */}
+// //       <div className="admin-sidebar">
+
+// //         <h2>Admin Panel</h2>
+
+// //         <button onClick={() => setActiveTab("dashboard")}>
+// //           Dashboard
+// //         </button>
+
+// //         <button onClick={() => setActiveTab("searchCustomer")}>
+// //           Search Customer
+// //         </button>
+
+// //         <button onClick={() => setActiveTab("createCustomer")}>
+// //           Create Customer
+// //         </button>
+
+// //         <button onClick={() => setActiveTab("payments")}>
+// //           View Payments
+// //         </button>
+
+// //         <button onClick={() => setActiveTab("materials")}>
+// //           Materials
+// //         </button>
+
+// //         <button
+// //           className="logout-btn"
+// //           onClick={logout}
+// //         >
+// //           Logout
+// //         </button>
+
+// //       </div>
+
+// //       {/* Content */}
+// //       <div className="admin-content">
+
+// //         {/* Dashboard */}
+// //         {activeTab === "dashboard" && (
+// //           <>
+// //             <h1>Admin Dashboard</h1>
+
+// //             <div className="cards">
+
+// //               <div className="card">
+// //                 <h3>Total Customers</h3>
+// //                 <p>0</p>
+// //               </div>
+
+// //               <div className="card">
+// //                 <h3>Total Payments</h3>
+// //                 <p>₹0</p>
+// //               </div>
+
+// //               <div className="card">
+// //                 <h3>Materials</h3>
+// //                 <p>0</p>
+// //               </div>
+
+// //             </div>
+// //           </>
+// //         )}
+
+// //         {/* Search Customer */}
+// //         {activeTab === "searchCustomer" && (
+// //           <>
+// //             <h1>Search Customer</h1>
+
+// //             <input
+// //               type="text"
+// //               placeholder="Search by first name or last name..."
+// //               className="search-box"
+// //               value={searchText}
+// //               onChange={handleSearch}
+// //             />
+
+// //             {searchText && customers.length > 0 && (
+// //               <div className="suggestions">
+
+// //                 {customers.map(customer => (
+
+// //                   <div
+// //                     key={customer.customerId}
+// //                     className="suggestion-item"
+// //                   >
+// //                     {customer.firstname} {customer.lastname}
+// //                   </div>
+
+// //                 ))}
+
+// //               </div>
+// //             )}
+
+// //             {customers.length > 0 && (
+// //               <table>
+
+// //                 <thead>
+// //                   <tr>
+// //                     <th>ID</th>
+// //                     <th>Name</th>
+// //                     <th>Phone</th>
+// //                     <th>Status</th>
+// //                   </tr>
+// //                 </thead>
+
+// //                 <tbody>
+
+// //                   {customers.map(customer => (
+
+// //                     <tr key={customer.customerId}>
+
+// //                       <td>{customer.customerId}</td>
+
+// //                       <td>
+// //                         {customer.firstname} {customer.lastname}
+// //                       </td>
+
+// //                       <td>{customer.phoneNo}</td>
+
+// //                       <td>
+// //                         {customer.approved
+// //                           ? "Approved"
+// //                           : "Pending"}
+// //                       </td>
+
+// //                     </tr>
+
+// //                   ))}
+
+// //                 </tbody>
+
+// //               </table>
+// //             )}
+// //           </>
+// //         )}
+
+// //         {/* Create Customer */}
+// //         {activeTab === "createCustomer" && (
+// //           <>
+// //             <h1>Create Customer</h1>
+
+// //             <form
+// //               className="customer-form"
+// //               onSubmit={handleCreateCustomer}
+// //             >
+
+// //               <input
+// //                 type="text"
+// //                 name="firstname"
+// //                 placeholder="First Name"
+// //                 value={customerForm.firstname}
+// //                 onChange={handleCustomerChange}
+// //                 required
+// //               />
+
+// //               <input
+// //                 type="text"
+// //                 name="lastname"
+// //                 placeholder="Last Name"
+// //                 value={customerForm.lastname}
+// //                 onChange={handleCustomerChange}
+// //               />
+
+// //               <input
+// //                 type="email"
+// //                 name="email"
+// //                 placeholder="Email"
+// //                 value={customerForm.email}
+// //                 onChange={handleCustomerChange}
+// //                 required
+// //               />
+
+// //               <input
+// //                 type="text"
+// //                 name="phoneNo"
+// //                 placeholder="Phone Number"
+// //                 value={customerForm.phoneNo}
+// //                 onChange={handleCustomerChange}
+// //               />
+
+// //               <input
+// //                 type="password"
+// //                 name="password"
+// //                 placeholder="Password"
+// //                 value={customerForm.password}
+// //                 onChange={handleCustomerChange}
+// //                 required
+// //               />
+
+// //               <textarea
+// //                 name="address"
+// //                 placeholder="Address"
+// //                 value={customerForm.address}
+// //                 onChange={handleCustomerChange}
+// //               />
+
+// //               <button type="submit">
+// //                 Create Customer
+// //               </button>
+
+// //             </form>
+// //           </>
+// //         )}
+
+// //         {/* Payments */}
+// //         {activeTab === "payments" && (
+// //           <>
+// //             <h1>Payments</h1>
+
+// //             <table>
+
+// //               <thead>
+// //                 <tr>
+// //                   <th>Customer</th>
+// //                   <th>Amount</th>
+// //                   <th>Payment Type</th>
+// //                   <th>Date</th>
+// //                 </tr>
+// //               </thead>
+
+// //               <tbody>
+// //                 <tr>
+// //                   <td>No payment records yet</td>
+// //                   <td>-</td>
+// //                   <td>-</td>
+// //                   <td>-</td>
+// //                 </tr>
+// //               </tbody>
+
+// //             </table>
+// //           </>
+// //         )}
+
+// //         {/* Materials */}
+// //         {activeTab === "materials" && (
+// //           <>
+// //             <h1>Materials</h1>
+
+// //             <table>
+
+// //               <thead>
+// //                 <tr>
+// //                   <th>Material</th>
+// //                   <th>Unit</th>
+// //                 </tr>
+// //               </thead>
+
+// //               <tbody>
+
+// //                 <tr>
+// //                   <td>Cement</td>
+// //                   <td>Bags</td>
+// //                 </tr>
+
+// //                 <tr>
+// //                   <td>Iron</td>
+// //                   <td>Kg</td>
+// //                 </tr>
+
+// //               </tbody>
+
+// //             </table>
+// //           </>
+// //         )}
+
+// //       </div>
+
+// //     </div>
+// //   );
+// // }
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./AdminDashboard.css";
+import { createCustomer, searchCustomer } from "../api";
+import "./theme.css";
+
+import { getPayments } from "../api";
+import { useEffect } from "react";
+
+
+const NAV = [
+  { key: "dashboard",      label: "Dashboard",       icon: "📊" },
+  { key: "searchCustomer", label: "Search Customer", icon: "🔍" },
+  { key: "createCustomer", label: "Create Customer", icon: "➕" },
+  { key: "payments",       label: "View Payments",   icon: "💳" },
+  { key: "materials",      label: "Materials",       icon: "🧱" },
+];
 
 export default function AdminDashboard() {
-
   const navigate = useNavigate();
-
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [searchText, setSearchText] = useState("");
+  const [customers, setCustomers] = useState([]);
 
-  const logout = () => {
-    localStorage.clear();
-    navigate("/");
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  const [customerForm, setCustomerForm] = useState({
+    firstname: "", lastname: "", email: "",
+    phoneNo: "", password: "", address: ""
+  });
+
+  const logout = () => { localStorage.clear(); navigate("/"); };
+
+  const [payments, setPayments] = useState([]);
+
+  const handleCustomerChange = (e) =>
+    setCustomerForm({ ...customerForm, [e.target.name]: e.target.value });
+
+  const handleCreateCustomer = async (e) => {
+    e.preventDefault();
+    try {
+      await createCustomer(customerForm);
+      alert("Customer created successfully");
+      setCustomerForm({ firstname: "", lastname: "", email: "", phoneNo: "", password: "", address: "" });
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to create customer");
+    }
+  };
+
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setSearchText(value);
+    // setSelectedCustomer(null);
+    if (!value.trim()) { setCustomers([]); return; }
+    try {
+      const response = await searchCustomer(value);
+      setCustomers(response.data);
+    } catch (err) { /* silent */ }
+  };
+
+  useEffect(() => {
+
+    loadPayments();
+
+  }, []);
+
+  const loadPayments = async () => {
+
+    try {
+
+      const response =
+        await getPayments();
+
+      setPayments(response.data);
+
+    } catch (err) {
+
+      console.error(err);
+
+    }
   };
 
   return (
-    <div className="admin-container">
+    <div className="admin-root">
 
-      {/* Sidebar */}
-      <div className="admin-sidebar">
+      {/* ── Sidebar ── */}
+      <aside className="admin-sidebar">
+        <div className="admin-brand">
+          <div className="admin-brand-square">P</div>
+          <div className="admin-brand-text">
+            <div className="admin-brand-name">Property Mgmt</div>
+            <div className="admin-brand-sub">Admin Panel</div>
+          </div>
+        </div>
 
-        <h2>Admin Panel</h2>
+        <nav className="admin-nav">
+          {NAV.map((item) => (
+            <button key={item.key}
+              className={`admin-nav-item ${activeTab === item.key ? "active" : ""}`}
+              onClick={() => setActiveTab(item.key)}>
+              <span className="admin-nav-icon">{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
 
-        <button onClick={() => setActiveTab("dashboard")}>
-          Dashboard
-        </button>
+        <button className="admin-logout" onClick={logout}>⎋ Logout</button>
+      </aside>
 
-        <button onClick={() => setActiveTab("searchCustomer")}>
-          Search Customer
-        </button>
-
-        <button onClick={() => setActiveTab("createCustomer")}>
-          Create Customer
-        </button>
-
-        <button onClick={() => setActiveTab("payments")}>
-          View Payments
-        </button>
-
-        <button onClick={() => setActiveTab("materials")}>
-          Materials
-        </button>
-
-        <button className="logout-btn" onClick={logout}>
-          Logout
-        </button>
-
-      </div>
-
-      {/* Main Content */}
-      <div className="admin-content">
+      {/* ── Content ── */}
+      <main className="admin-main">
 
         {activeTab === "dashboard" && (
           <>
-            <h1>Admin Dashboard</h1>
+            <div className="header-row">
+              <div>
+                <h1 className="admin-page-title">Admin Dashboard</h1>
+                <p className="admin-page-sub">Overview of customers, payments, and materials.</p>
+              </div>
+            </div>
 
             <div className="cards">
-
-              <div className="card">
-                <h3>Total Customers</h3>
-                <p>0</p>
-              </div>
-
-              <div className="card">
-                <h3>Total Payments</h3>
-                <p>₹0</p>
-              </div>
-
-              <div className="card">
-                <h3>Materials</h3>
-                <p>0</p>
-              </div>
-
+              <div className="card"><h3>Total Customers</h3><p>0</p></div>
+              <div className="card"><h3>Total Payments</h3><p>₹0</p></div>
+              <div className="card"><h3>Materials</h3><p>0</p></div>
             </div>
           </>
         )}
 
         {activeTab === "searchCustomer" && (
           <>
-            <h1>Search Customer</h1>
+            <div className="header-row">
+              <div>
+                <h1 className="admin-page-title">Search Customer</h1>
+                <p className="admin-page-sub">Find a customer by first or last name.</p>
+              </div>
+            </div>
 
             <input
               type="text"
-              placeholder="Enter customer name..."
+              placeholder="Search by first name or last name…"
               className="search-box"
+              value={searchText}
+              onChange={handleSearch}
             />
 
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Phone</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
+            {searchText && customers.length > 0 && (
+              <div className="suggestions">
+                {customers.map((customer) => (
+                  <div key={customer.customerId} className="suggestion-item">
+                    {customer.firstname} {customer.lastname}
+                  </div>
+                  
+                  // <div
+                  //   key={customer.customerId}
+                  //   className="suggestion-item"
+                  //   onClick={() => {
+                  //     setSelectedCustomer(customer);
+                  //     setSearchText(
+                  //       `${customer.firstname} ${customer.lastname}`
+                  //     );
+                  //     setCustomers([]);
+                  //   }}
+                  // >
+                  //   {customer.firstname} {customer.lastname}
+                  // </div>
 
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Ravi Kumar</td>
-                  <td>9876543210</td>
-                  <td>Approved</td>
-                </tr>
-              </tbody>
-            </table>
+                ))}
+              </div>
+            )}
+
+            {customers.length > 0 ? (
+              <table>
+                <thead>
+                  <tr><th>ID</th><th>Name</th><th>Phone</th><th>Role</th></tr>
+                </thead>
+
+                <tbody>
+                  {customers.map((customer) => (
+                    <tr key={customer.customerId}>
+                      <td>#{customer.customerId}</td>
+                      <td>{customer.firstname} {customer.lastname}</td>
+                      <td>{customer.phoneNo || "—"}</td>
+                      {/* <td>
+                        {customer.approved
+                          ? <span className="status-approved">Approved</span>
+                          : <span className="status-pending">Pending</span>}
+                      </td> */}
+                      <td>Customer</td>
+                    </tr>
+                  ))}
+                </tbody>
+
+                {/* <tbody>
+
+                  {selectedCustomer && (
+                    <tr>
+                      <td>{selectedCustomer.customerId}</td>
+                      <td>
+                        {selectedCustomer.firstname}
+                        {" "}
+                        {selectedCustomer.lastname}
+                      </td>
+                      <td>{selectedCustomer.phoneNo}</td>
+                      <td>
+                        {selectedCustomer.approved
+                          ? "Approved"
+                          : "Pending"}
+                      </td>
+                    </tr>
+                  )}
+                </tbody> */}
+                
+              </table>
+            ) : searchText ? (
+              <div className="empty-state">
+                <div className="empty-icon">🔍</div>
+                <p className="empty-text">No customers found</p>
+                <p className="empty-sub">Try a different name.</p>
+              </div>
+            ) : null}
           </>
         )}
 
         {activeTab === "createCustomer" && (
           <>
-            <h1>Create Customer</h1>
-
-            <form className="customer-form">
-
-              <input
-                type="text"
-                placeholder="First Name"
-              />
-
-              <input
-                type="text"
-                placeholder="Last Name"
-              />
-
-              <input
-                type="email"
-                placeholder="Email"
-              />
-
-              <input
-                type="text"
-                placeholder="Phone"
-              />
-
-              <input
-                type="password"
-                placeholder="Password"
-              />
-
-              <textarea
-                placeholder="Address"
-              />
-
-              <button type="submit">
+            <div className="header-row">
+              <div>
+                <h1 className="admin-page-title">Create Customer</h1>
+                <p className="admin-page-sub">Add a new customer record to the system.</p>
+              </div>
+              <button type="submit" form="create-customer-form" className="btn-primary">
                 Create Customer
               </button>
+            </div>
 
+            <form id="create-customer-form" className="customer-form" onSubmit={handleCreateCustomer}>
+              <input type="text" name="firstname" placeholder="First Name"
+                value={customerForm.firstname} onChange={handleCustomerChange} required />
+              <input type="text" name="lastname" placeholder="Last Name"
+                value={customerForm.lastname} onChange={handleCustomerChange} />
+              <input type="email" name="email" placeholder="Email"
+                value={customerForm.email} onChange={handleCustomerChange} required />
+              <input type="text" name="phoneNo" placeholder="Phone Number"
+                value={customerForm.phoneNo} onChange={handleCustomerChange} />
+              <input type="password" name="password" placeholder="Password"
+                value={customerForm.password} onChange={handleCustomerChange} required />
+              <textarea name="address" placeholder="Address" rows={3}
+                value={customerForm.address} onChange={handleCustomerChange} />
             </form>
           </>
         )}
 
         {activeTab === "payments" && (
           <>
-            <h1>Payments</h1>
+            <div className="header-row">
+              <div>
+                <h1 className="admin-page-title">
+                  Payments
+                </h1>
 
-            <table>
-              <thead>
-                <tr>
-                  <th>Customer</th>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
+                <p className="admin-page-sub">
+                  All recorded customer payments.
+                </p>
+              </div>
+            </div>
 
-              <tbody>
-                <tr>
-                  <td>Ravi Kumar</td>
-                  <td>₹50,000</td>
-                  <td>Advance</td>
-                  <td>16-06-2026</td>
-                </tr>
-              </tbody>
-            </table>
+            {payments.length > 0 ? (
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Way</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {payments.map(payment => (
+                    <tr key={payment.paymentId}>
+                      <td>
+                        {payment.customer?.firstname}
+                        {" "}
+                        {payment.customer?.lastname}
+                      </td>
+                      <td>
+                        ₹{payment.amount}
+                      </td>
+                      <td>
+                        {payment.type}
+                      </td>
+                      <td>
+                        {payment.way}
+                      </td>
+                      <td>
+                        {payment.paymentDate
+                          ? new Date(payment.paymentDate)
+                            .toLocaleDateString()
+                          : "-"
+                        }
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="empty-state">
+                <div className="empty-icon">
+                  💳
+                </div>
+                <p className="empty-text">
+                  No payment records yet
+                </p>
+                <p className="empty-sub">
+                  Payments will appear here once recorded.
+                </p>
+              </div>
+            )}
           </>
         )}
 
         {activeTab === "materials" && (
           <>
-            <h1>Materials</h1>
+            <div className="header-row">
+              <div>
+                <h1 className="admin-page-title">Materials</h1>
+                <p className="admin-page-sub">Units of measure used across construction materials.</p>
+              </div>
+            </div>
 
             <table>
-              <thead>
-                <tr>
-                  <th>Material</th>
-                  <th>Unit</th>
-                </tr>
-              </thead>
-
+              <thead><tr><th>Material</th><th>Unit</th></tr></thead>
               <tbody>
-                <tr>
-                  <td>Cement</td>
-                  <td>Bags</td>
-                </tr>
-
-                <tr>
-                  <td>Iron</td>
-                  <td>Tons/Kg</td>
-                </tr>
+                <tr><td>Cement</td><td>Bags</td></tr>
+                <tr><td>Iron</td><td>Kg</td></tr>
               </tbody>
             </table>
           </>
         )}
 
-      </div>
-
+      </main>
     </div>
   );
 }
