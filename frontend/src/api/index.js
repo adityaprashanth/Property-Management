@@ -99,3 +99,39 @@ export const deleteDocument = (
   api.delete(
     `/documents/${documentId}`
   );
+
+// export const getCustomerDetails = (id) =>
+//   api.get(`/customers/${id}`);
+
+// export const getCustomerPhotos = (id) =>
+//   api.get(`/photos/customer/${id}`);
+
+// export const getCustomerStage = (id) =>
+//   api.get(`/stages/customer/${id}`);
+
+// export const getCustomerMaterials = (id) =>
+//   api.get(`/materials/customer/${id}`);
+
+export const getCustomerStage = (customerId) =>
+  api.get(`/stages/customer/${customerId}`);
+
+export const getCustomerPhotos = (customerId) =>
+  api.get(`/photos/customer/${customerId}`);
+
+export const getCustomerMaterials = (customerId) =>
+  api.get(`/materials/customer/${customerId}`);
+
+export const downloadDocument = (documentId) =>
+  `${"http://localhost:8080/api"}/documents/download/${documentId}`;
+
+export const getDashboardStats = () =>
+  api.get("/dashboard/stats");
+
+export const deactivateCustomer = (id) =>
+  api.put(`/customers/${id}/deactivate`);
+
+export const getInactiveCustomers = () =>
+  api.get("/customers/inactive");
+
+export const activateCustomer = (id) =>
+  api.put(`/customers/${id}/activate`);

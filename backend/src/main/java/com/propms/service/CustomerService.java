@@ -82,15 +82,55 @@ public class CustomerService {
         if (updates.getHowPaid() != null)
             existing.setHowPaid(updates.getHowPaid());
 
+        if (updates.getFacing() != null)
+            existing.setFacing(updates.getFacing());
+
+        if (updates.getConstructedArea() != null)
+            existing.setConstructedArea(
+                    updates.getConstructedArea());
+
+        if (updates.getApprovedArea() != null)
+            existing.setApprovedArea(
+                    updates.getApprovedArea());
+
+        if (updates.getSiteArea() != null)
+            existing.setSiteArea(
+                    updates.getSiteArea());
+
+        if (updates.getStatus() != null)
+            existing.setStatus(
+                    updates.getStatus());
+
         return customerRepository.save(existing);
     }
 
-    public List<Customer> searchCustomer(String keyword) {
+    // public List<Customer> searchCustomer(String keyword) {
 
+    //     return customerRepository
+    //             .findByFirstnameContainingIgnoreCaseOrLastnameContainingIgnoreCase(
+    //                     keyword,
+    //                     keyword
+    //             );
+    // }
+
+    // public List<Customer> searchCustomer(String keyword) {
+
+    //     return customerRepository
+    //             .searchActiveCustomers(keyword);
+    // }
+
+    public List<Customer> searchCustomer(String keyword) {
         return customerRepository
                 .findByFirstnameContainingIgnoreCaseOrLastnameContainingIgnoreCase(
                         keyword,
                         keyword
-                );
+                )
+                .stream()
+                .filter(c ->
+                    !"INACTIVE".equalsIgnoreCase(
+                        c.getStatus()
+                    )
+                )
+                .toList();
     }
 }

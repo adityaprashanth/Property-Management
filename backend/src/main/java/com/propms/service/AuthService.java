@@ -66,10 +66,43 @@ public class AuthService {
         if (!passwordEncoder.matches(rawPassword, user.getPassword()))
             throw new RuntimeException("Invalid email or password.");
 
+        // String firstname = "User";
+        // if (user.getCustomerId() != null)
+        //     firstname = customerRepository.findById(user.getCustomerId())
+        //             .map(Customer::getFirstname).orElse("User");
+
         String firstname = "User";
-        if (user.getCustomerId() != null)
-            firstname = customerRepository.findById(user.getCustomerId())
-                    .map(Customer::getFirstname).orElse("User");
+
+        if (user.getCustomerId() != null) {
+            Customer customer =
+                    customerRepository.findById(
+                            user.getCustomerId()
+                    ).orElse(null);
+            if (customer != null) {
+                if ("INACTIVE".equalsIgnoreCase(
+                        customer.getStatus())) {
+                    throw new RuntimeException(
+                            "Account has been deactivated"
+                    );
+                }
+                firstname = customer.getFirstname();
+            }
+        }
+
+        if (user.getCustomerId() != null) {
+            Customer customer =
+                    customerRepository
+                            .findById(
+                                user.getCustomerId()
+                            )
+                            .orElseThrow();
+            if ("INACTIVE".equalsIgnoreCase(
+                    customer.getStatus())) {  
+                throw new RuntimeException(
+                    "Account has been deactivated. Contact administrator."
+                );
+            }
+        }
 
         Map<String, Object> resp = new HashMap<>();
         resp.put("token",      jwtService.generateToken(email, user.getRole()));

@@ -364,11 +364,13 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createCustomer, searchCustomer } from "../api";
+import { createCustomer, searchCustomer, deactivateCustomer, getInactiveCustomers, activateCustomer } from "../api";
 import "./theme.css";
 
 import { getPayments } from "../api";
 import { useEffect } from "react";
+
+import { getDashboardStats } from "../api";
 
 
 const NAV = [
@@ -377,6 +379,8 @@ const NAV = [
   { key: "createCustomer", label: "Create Customer", icon: "➕" },
   { key: "payments",       label: "View Payments",   icon: "💳" },
   { key: "materials",      label: "Materials",       icon: "🧱" },
+  { key: "deleteCustomer", label: "Delete Customer", icon: "🗑️"},
+  { key: "activateCustomer", label: "Activate Customer", icon: "♻️"}
 ];
 
 export default function AdminDashboard() {
@@ -384,6 +388,16 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [searchText, setSearchText] = useState("");
   const [customers, setCustomers] = useState([]);
+
+  const [deleteSearch, setDeleteSearch] =
+    useState("");
+
+  const [deleteResults, setDeleteResults] =
+    useState([]);
+  
+  const [stats, setStats] = useState({totalCustomers: 0, totalPayments: 0, projectsRunning: 0});
+
+  const [inactiveCustomers, setInactiveCustomers] = useState([]);
 
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
@@ -410,6 +424,61 @@ export default function AdminDashboard() {
     }
   };
 
+  const searchDeleteCustomer = async () => {
+    if (!deleteSearch.trim()) return;
+    const res =
+      await searchCustomer(deleteSearch);
+    setDeleteResults(res.data);
+  };
+
+  const deleteCustomer = async (
+    customerId
+  ) => {
+
+    if (
+      !window.confirm(
+        "Deactivate this customer?"
+      )
+    ) {
+      return;
+    }
+
+    await deactivateCustomer(
+      customerId
+    );
+
+    alert(
+      "Customer deactivated successfully"
+    );
+
+    setDeleteResults(
+      deleteResults.filter(
+        c =>
+          c.customerId !== customerId
+      )
+    );
+  };
+
+  const loadInactiveCustomers = async () => {
+    try {
+      const response =
+        await getInactiveCustomers();
+      setInactiveCustomers(
+        response.data
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const activateSelectedCustomer = async (
+    customerId
+  ) => {
+    await activateCustomer(customerId);
+    alert("Customer activated");
+    loadInactiveCustomers();
+  };
+
   const handleSearch = async (e) => {
     const value = e.target.value;
     setSearchText(value);
@@ -425,7 +494,21 @@ export default function AdminDashboard() {
 
     loadPayments();
 
+    getDashboardStats()
+      .then(res => {
+        setStats(res.data);
+      })
+      .catch(console.error);
+
   }, []);
+
+  useEffect(() => {
+    if (
+      activeTab === "activateCustomer"
+    ) {
+      loadInactiveCustomers();
+    }
+  }, [activeTab]);
 
   const loadPayments = async () => {
 
@@ -482,10 +565,32 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="cards">
+            {/* <div className="cards">
               <div className="card"><h3>Total Customers</h3><p>0</p></div>
               <div className="card"><h3>Total Payments</h3><p>₹0</p></div>
               <div className="card"><h3>Materials</h3><p>0</p></div>
+            </div> */}
+            <div className="cards">
+
+              <div className="card">
+                <h3>Total Customers</h3>
+                <p>{stats.totalCustomers}</p>
+              </div>
+
+              <div className="card">
+                <h3>Total Payments</h3>
+                <p>
+                  ₹{Number(
+                    stats.totalPayments
+                  ).toLocaleString("en-IN")}
+                </p>
+              </div>
+
+              <div className="card">
+                <h3>Projects Running</h3>
+                <p>{stats.projectsRunning}</p>
+              </div>
+
             </div>
           </>
         )}
@@ -510,8 +615,22 @@ export default function AdminDashboard() {
             {searchText && customers.length > 0 && (
               <div className="suggestions">
                 {customers.map((customer) => (
-                  <div key={customer.customerId} className="suggestion-item">
-                    {customer.firstname} {customer.lastname}
+                  // <div key={customer.customerId} className="suggestion-item">
+                  //   {customer.firstname} {customer.lastname}
+                  // </div>
+
+                  <div
+                    key={customer.customerId}
+                    className="suggestion-item"
+                    onClick={() =>
+                      navigate(
+                        `/admin/customer/${customer.customerId}`
+                      )
+                    }
+                  >
+                    {customer.firstname}
+                    {" "}
+                    {customer.lastname}
                   </div>
                   
                   // <div
@@ -542,7 +661,23 @@ export default function AdminDashboard() {
                   {customers.map((customer) => (
                     <tr key={customer.customerId}>
                       <td>#{customer.customerId}</td>
-                      <td>{customer.firstname} {customer.lastname}</td>
+                      {/* <td>{customer.firstname} {customer.lastname}</td> */}
+
+                      <td>
+                        <span
+                          style={{
+                            color: "#2563eb",
+                            cursor: "pointer",
+                            textDecoration: "underline"
+                          }}
+                          onClick={() =>
+                            navigate(`/customer/${customer.customerId}`)
+                          }
+                        >
+                          {customer.firstname} {customer.lastname}
+                        </span>
+                      </td>
+
                       <td>{customer.phoneNo || "—"}</td>
                       {/* <td>
                         {customer.approved
@@ -700,6 +835,145 @@ export default function AdminDashboard() {
               <tbody>
                 <tr><td>Cement</td><td>Bags</td></tr>
                 <tr><td>Iron</td><td>Kg</td></tr>
+              </tbody>
+            </table>
+          </>
+        )}
+
+        {activeTab === "deleteCustomer" && (
+          <>
+            <div className="header-row">
+              <div>
+                <h1 className="admin-page-title">
+                  Delete Customer
+                </h1>
+
+                <p className="admin-page-sub">
+                  Search and deactivate customers.
+                </p>
+              </div>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Search customer..."
+              className="search-box"
+              value={deleteSearch}
+              onChange={(e) =>
+                setDeleteSearch(e.target.value)
+              }
+            />
+
+            <button
+              className="btn-primary"
+              onClick={searchDeleteCustomer}
+              style={{ marginTop: "10px" }}
+            >
+              Search
+            </button>
+
+            {deleteResults.length > 0 && (
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {deleteResults.map(customer => (
+                    <tr key={customer.customerId}>
+                      <td>
+                        {customer.customerId}
+                      </td>
+
+                      <td>
+                        {customer.firstname}
+                        {" "}
+                        {customer.lastname}
+                      </td>
+
+                      <td>
+                        {customer.phoneNo}
+                      </td>
+
+                      <td>
+                        {customer.status}
+                      </td>
+
+                      <td>
+                        <button
+                          className="btn-danger"
+                          onClick={() =>
+                            deleteCustomer(
+                              customer.customerId
+                            )
+                          }
+                        >
+                          Deactivate
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </>
+        )}
+
+        {activeTab === "activateCustomer" && (
+          <>
+            <div className="header-row">
+              <div>
+                <h1 className="admin-page-title">
+                  Activate Customer
+                </h1>
+                <p className="admin-page-sub">
+                  View and restore inactive customers.
+                </p>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inactiveCustomers.map(customer => (
+                  <tr key={customer.customerId}>
+                    <td>
+                      {customer.customerId}
+                    </td>
+                    <td>
+                      {customer.firstname}
+                      {" "}
+                      {customer.lastname}
+                    </td>
+                    <td>
+                      {customer.phoneNo}
+                    </td>
+                    <td>
+                      <button
+                        className="btn-primary"
+                        onClick={() =>
+                          activateSelectedCustomer(
+                            customer.customerId
+                          )
+                        }
+                      >
+                        Activate
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </>
