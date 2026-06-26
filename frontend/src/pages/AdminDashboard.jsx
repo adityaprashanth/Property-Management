@@ -1,373 +1,24 @@
-// // // src/pages/AdminDashboard.jsx
-
-// // import React, { useState } from "react";
-// // import { useNavigate } from "react-router-dom";
-// // import { createCustomer, searchCustomer } from "../api";
-// // import "./AdminDashboard.css";
-
-// // export default function AdminDashboard() {
-
-// //   const navigate = useNavigate();
-
-// //   const [activeTab, setActiveTab] = useState("dashboard");
-
-// //   const [searchText, setSearchText] = useState("");
-// //   const [customers, setCustomers] = useState([]);
-
-// //   const [customerForm, setCustomerForm] = useState({
-// //     firstname: "",
-// //     lastname: "",
-// //     email: "",
-// //     phoneNo: "",
-// //     password: "",
-// //     address: ""
-// //   });
-
-// //   const logout = () => {
-// //     localStorage.clear();
-// //     navigate("/");
-// //   };
-
-// //   const handleCustomerChange = (e) => {
-// //     setCustomerForm({
-// //       ...customerForm,
-// //       [e.target.name]: e.target.value
-// //     });
-// //   };
-
-// //   const handleCreateCustomer = async (e) => {
-// //     e.preventDefault();
-
-// //     try {
-
-// //       await createCustomer(customerForm);
-
-// //       alert("Customer created successfully");
-
-// //       setCustomerForm({
-// //         firstname: "",
-// //         lastname: "",
-// //         email: "",
-// //         phoneNo: "",
-// //         password: "",
-// //         address: ""
-// //       });
-
-// //     } catch (err) {
-
-// //       console.error(err);
-
-// //       alert(
-// //         err.response?.data?.error ||
-// //         "Failed to create customer"
-// //       );
-// //     }
-// //   };
-
-// //   const handleSearch = async (e) => {
-
-// //     const value = e.target.value;
-
-// //     setSearchText(value);
-
-// //     if (!value.trim()) {
-// //       setCustomers([]);
-// //       return;
-// //     }
-
-// //     try {
-
-// //       const response = await searchCustomer(value);
-
-// //       setCustomers(response.data);
-
-// //     } catch (err) {
-
-// //       console.error(err);
-
-// //     }
-// //   };
-
-// //   return (
-// //     <div className="admin-container">
-
-// //       {/* Sidebar */}
-// //       <div className="admin-sidebar">
-
-// //         <h2>Admin Panel</h2>
-
-// //         <button onClick={() => setActiveTab("dashboard")}>
-// //           Dashboard
-// //         </button>
-
-// //         <button onClick={() => setActiveTab("searchCustomer")}>
-// //           Search Customer
-// //         </button>
-
-// //         <button onClick={() => setActiveTab("createCustomer")}>
-// //           Create Customer
-// //         </button>
-
-// //         <button onClick={() => setActiveTab("payments")}>
-// //           View Payments
-// //         </button>
-
-// //         <button onClick={() => setActiveTab("materials")}>
-// //           Materials
-// //         </button>
-
-// //         <button
-// //           className="logout-btn"
-// //           onClick={logout}
-// //         >
-// //           Logout
-// //         </button>
-
-// //       </div>
-
-// //       {/* Content */}
-// //       <div className="admin-content">
-
-// //         {/* Dashboard */}
-// //         {activeTab === "dashboard" && (
-// //           <>
-// //             <h1>Admin Dashboard</h1>
-
-// //             <div className="cards">
-
-// //               <div className="card">
-// //                 <h3>Total Customers</h3>
-// //                 <p>0</p>
-// //               </div>
-
-// //               <div className="card">
-// //                 <h3>Total Payments</h3>
-// //                 <p>₹0</p>
-// //               </div>
-
-// //               <div className="card">
-// //                 <h3>Materials</h3>
-// //                 <p>0</p>
-// //               </div>
-
-// //             </div>
-// //           </>
-// //         )}
-
-// //         {/* Search Customer */}
-// //         {activeTab === "searchCustomer" && (
-// //           <>
-// //             <h1>Search Customer</h1>
-
-// //             <input
-// //               type="text"
-// //               placeholder="Search by first name or last name..."
-// //               className="search-box"
-// //               value={searchText}
-// //               onChange={handleSearch}
-// //             />
-
-// //             {searchText && customers.length > 0 && (
-// //               <div className="suggestions">
-
-// //                 {customers.map(customer => (
-
-// //                   <div
-// //                     key={customer.customerId}
-// //                     className="suggestion-item"
-// //                   >
-// //                     {customer.firstname} {customer.lastname}
-// //                   </div>
-
-// //                 ))}
-
-// //               </div>
-// //             )}
-
-// //             {customers.length > 0 && (
-// //               <table>
-
-// //                 <thead>
-// //                   <tr>
-// //                     <th>ID</th>
-// //                     <th>Name</th>
-// //                     <th>Phone</th>
-// //                     <th>Status</th>
-// //                   </tr>
-// //                 </thead>
-
-// //                 <tbody>
-
-// //                   {customers.map(customer => (
-
-// //                     <tr key={customer.customerId}>
-
-// //                       <td>{customer.customerId}</td>
-
-// //                       <td>
-// //                         {customer.firstname} {customer.lastname}
-// //                       </td>
-
-// //                       <td>{customer.phoneNo}</td>
-
-// //                       <td>
-// //                         {customer.approved
-// //                           ? "Approved"
-// //                           : "Pending"}
-// //                       </td>
-
-// //                     </tr>
-
-// //                   ))}
-
-// //                 </tbody>
-
-// //               </table>
-// //             )}
-// //           </>
-// //         )}
-
-// //         {/* Create Customer */}
-// //         {activeTab === "createCustomer" && (
-// //           <>
-// //             <h1>Create Customer</h1>
-
-// //             <form
-// //               className="customer-form"
-// //               onSubmit={handleCreateCustomer}
-// //             >
-
-// //               <input
-// //                 type="text"
-// //                 name="firstname"
-// //                 placeholder="First Name"
-// //                 value={customerForm.firstname}
-// //                 onChange={handleCustomerChange}
-// //                 required
-// //               />
-
-// //               <input
-// //                 type="text"
-// //                 name="lastname"
-// //                 placeholder="Last Name"
-// //                 value={customerForm.lastname}
-// //                 onChange={handleCustomerChange}
-// //               />
-
-// //               <input
-// //                 type="email"
-// //                 name="email"
-// //                 placeholder="Email"
-// //                 value={customerForm.email}
-// //                 onChange={handleCustomerChange}
-// //                 required
-// //               />
-
-// //               <input
-// //                 type="text"
-// //                 name="phoneNo"
-// //                 placeholder="Phone Number"
-// //                 value={customerForm.phoneNo}
-// //                 onChange={handleCustomerChange}
-// //               />
-
-// //               <input
-// //                 type="password"
-// //                 name="password"
-// //                 placeholder="Password"
-// //                 value={customerForm.password}
-// //                 onChange={handleCustomerChange}
-// //                 required
-// //               />
-
-// //               <textarea
-// //                 name="address"
-// //                 placeholder="Address"
-// //                 value={customerForm.address}
-// //                 onChange={handleCustomerChange}
-// //               />
-
-// //               <button type="submit">
-// //                 Create Customer
-// //               </button>
-
-// //             </form>
-// //           </>
-// //         )}
-
-// //         {/* Payments */}
-// //         {activeTab === "payments" && (
-// //           <>
-// //             <h1>Payments</h1>
-
-// //             <table>
-
-// //               <thead>
-// //                 <tr>
-// //                   <th>Customer</th>
-// //                   <th>Amount</th>
-// //                   <th>Payment Type</th>
-// //                   <th>Date</th>
-// //                 </tr>
-// //               </thead>
-
-// //               <tbody>
-// //                 <tr>
-// //                   <td>No payment records yet</td>
-// //                   <td>-</td>
-// //                   <td>-</td>
-// //                   <td>-</td>
-// //                 </tr>
-// //               </tbody>
-
-// //             </table>
-// //           </>
-// //         )}
-
-// //         {/* Materials */}
-// //         {activeTab === "materials" && (
-// //           <>
-// //             <h1>Materials</h1>
-
-// //             <table>
-
-// //               <thead>
-// //                 <tr>
-// //                   <th>Material</th>
-// //                   <th>Unit</th>
-// //                 </tr>
-// //               </thead>
-
-// //               <tbody>
-
-// //                 <tr>
-// //                   <td>Cement</td>
-// //                   <td>Bags</td>
-// //                 </tr>
-
-// //                 <tr>
-// //                   <td>Iron</td>
-// //                   <td>Kg</td>
-// //                 </tr>
-
-// //               </tbody>
-
-// //             </table>
-// //           </>
-// //         )}
-
-// //       </div>
-
-// //     </div>
-// //   );
-// // }
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createCustomer, searchCustomer, deactivateCustomer, getInactiveCustomers, activateCustomer } from "../api";
 import "./theme.css";
 
-import { getPayments } from "../api";
+// import { getPayments } from "../api";
+// import {
+//   getPayments,
+//   getCustomerPayments,
+//   updatePayment,
+//   deletePayment
+// } from "../api";
+import {
+  getPayments,
+  getCustomerPayments,
+  filterPayments,
+  updatePayment,
+  deletePayment,
+  addPayment
+} from "../api";
+
 import { useEffect } from "react";
 
 import { getDashboardStats } from "../api";
@@ -409,6 +60,53 @@ export default function AdminDashboard() {
   const logout = () => { localStorage.clear(); navigate("/"); };
 
   const [payments, setPayments] = useState([]);
+
+  const [paymentSearch, setPaymentSearch] =
+    useState("");
+
+  const [paymentCustomers, setPaymentCustomers] =
+    useState([]);
+
+  const [selectedPaymentCustomer,
+    setSelectedPaymentCustomer] =
+    useState(null);
+
+  const [fromDate, setFromDate] =
+    useState("");
+
+  const [toDate, setToDate] =
+    useState("");
+
+  const [editingPayment,
+    setEditingPayment] =
+    useState(null);
+
+  // const [paymentForm,
+  //   setPaymentForm] =
+  //   useState({
+  //     amount: "",
+  //     type: "",
+  //     way: ""
+  //   });
+  const [paymentForm,
+    setPaymentForm] =
+    useState({
+      amount: "",
+      type: "",
+      way: "",
+      paymentDate: ""
+    });
+
+  const [showAddPayment, setShowAddPayment] =
+    useState(false);
+
+  const [newPayment, setNewPayment] =
+    useState({
+      amount: "",
+      type: "ADVANCE",
+      way: "UPI",
+      paymentDate: ""
+    });
 
   const handleCustomerChange = (e) =>
     setCustomerForm({ ...customerForm, [e.target.name]: e.target.value });
@@ -526,6 +224,207 @@ export default function AdminDashboard() {
     }
   };
 
+  const searchPaymentCustomer = async (
+    value
+  ) => {
+    setPaymentSearch(value);
+    if (!value.trim()) {
+      setPaymentCustomers([]);
+      return;
+    }
+    try {
+      const res =
+        await searchCustomer(value);
+      setPaymentCustomers(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const selectCustomerPayments =
+    async (customer) => {
+      setSelectedPaymentCustomer(
+        customer
+      );
+      const res =
+        await getCustomerPayments(
+          customer.customerId
+        );
+      setPayments(res.data);
+    };
+
+  const applyDateFilter =
+    async () => {
+      if (
+        !selectedPaymentCustomer ||
+        !fromDate ||
+        !toDate
+      ) {
+        return;
+      }
+      const res =
+        await filterPayments(
+          selectedPaymentCustomer.customerId,
+          fromDate,
+          toDate
+        );
+      setPayments(res.data);
+    };
+
+  const last15Days = async () => {
+
+    if (!selectedPaymentCustomer)
+      return;
+
+    const today = new Date();
+
+    const oldDate =
+      new Date();
+
+    oldDate.setDate(
+      today.getDate() - 15
+    );
+
+    const res =
+      await filterPayments(
+        selectedPaymentCustomer.customerId,
+        oldDate
+          .toISOString()
+          .split("T")[0],
+        today
+          .toISOString()
+          .split("T")[0]
+      );
+
+    setPayments(res.data);
+  };
+
+  const editPayment = (
+    payment
+  ) => {
+
+    setEditingPayment(
+      payment.paymentId
+    );
+
+    // setPaymentForm({
+    //   amount: payment.amount,
+    //   type: payment.type,
+    //   way: payment.way
+    // });
+    setPaymentForm({
+      amount: payment.amount,
+      type: payment.type || "",
+      way: payment.way || "",
+      paymentDate: payment.paymentDate
+        ? payment.paymentDate.substring(0, 10)
+        : ""
+    });
+  };
+
+  const savePayment =
+    async (paymentId) => {
+
+      // await updatePayment(
+      //   paymentId,
+      //   paymentForm
+      // );
+      await updatePayment(
+        paymentId,
+        {
+          ...paymentForm,
+          paymentDate:
+            paymentForm.paymentDate +
+            "T00:00:00"
+        }
+      );
+
+      if (
+        selectedPaymentCustomer
+      ) {
+
+        const res =
+          await getCustomerPayments(
+            selectedPaymentCustomer.customerId
+          );
+
+        setPayments(res.data);
+      }
+
+      setEditingPayment(null);
+    };
+
+  const removePayment =
+    async (paymentId) => {
+
+      if (
+        !window.confirm(
+          "Delete payment?"
+        )
+      ) {
+        return;
+      }
+
+      await deletePayment(
+        paymentId
+      );
+
+      setPayments(
+        payments.filter(
+          p =>
+            p.paymentId !==
+            paymentId
+        )
+      );
+    };
+
+  const handleAddPayment = async () => {
+
+    if (!selectedPaymentCustomer) {
+      alert("Select a customer first");
+      return;
+    }
+
+    try {
+
+      await addPayment({
+        customer: {
+          customerId:
+            selectedPaymentCustomer.customerId
+        },
+        amount: newPayment.amount,
+        type: newPayment.type,
+        way: newPayment.way,
+        paymentDate:
+          newPayment.paymentDate +
+          "T00:00:00"
+      });
+
+      alert("Payment added");
+
+      const res =
+        await getCustomerPayments(
+          selectedPaymentCustomer.customerId
+        );
+
+      setPayments(res.data);
+
+      setShowAddPayment(false);
+
+      setNewPayment({
+        amount: "",
+        type: "ADVANCE",
+        way: "UPI",
+        paymentDate: ""
+      });
+
+    } catch (err) {
+
+      console.error(err);
+      alert("Failed to add payment");
+
+    }
+  };
+
   return (
     <div className="admin-root">
 
@@ -565,11 +464,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* <div className="cards">
-              <div className="card"><h3>Total Customers</h3><p>0</p></div>
-              <div className="card"><h3>Total Payments</h3><p>₹0</p></div>
-              <div className="card"><h3>Materials</h3><p>0</p></div>
-            </div> */}
             <div className="cards">
 
               <div className="card">
@@ -615,9 +509,6 @@ export default function AdminDashboard() {
             {searchText && customers.length > 0 && (
               <div className="suggestions">
                 {customers.map((customer) => (
-                  // <div key={customer.customerId} className="suggestion-item">
-                  //   {customer.firstname} {customer.lastname}
-                  // </div>
 
                   <div
                     key={customer.customerId}
@@ -632,20 +523,6 @@ export default function AdminDashboard() {
                     {" "}
                     {customer.lastname}
                   </div>
-                  
-                  // <div
-                  //   key={customer.customerId}
-                  //   className="suggestion-item"
-                  //   onClick={() => {
-                  //     setSelectedCustomer(customer);
-                  //     setSearchText(
-                  //       `${customer.firstname} ${customer.lastname}`
-                  //     );
-                  //     setCustomers([]);
-                  //   }}
-                  // >
-                  //   {customer.firstname} {customer.lastname}
-                  // </div>
 
                 ))}
               </div>
@@ -661,7 +538,6 @@ export default function AdminDashboard() {
                   {customers.map((customer) => (
                     <tr key={customer.customerId}>
                       <td>#{customer.customerId}</td>
-                      {/* <td>{customer.firstname} {customer.lastname}</td> */}
 
                       <td>
                         <span
@@ -677,37 +553,11 @@ export default function AdminDashboard() {
                           {customer.firstname} {customer.lastname}
                         </span>
                       </td>
-
                       <td>{customer.phoneNo || "—"}</td>
-                      {/* <td>
-                        {customer.approved
-                          ? <span className="status-approved">Approved</span>
-                          : <span className="status-pending">Pending</span>}
-                      </td> */}
                       <td>Customer</td>
                     </tr>
                   ))}
                 </tbody>
-
-                {/* <tbody>
-
-                  {selectedCustomer && (
-                    <tr>
-                      <td>{selectedCustomer.customerId}</td>
-                      <td>
-                        {selectedCustomer.firstname}
-                        {" "}
-                        {selectedCustomer.lastname}
-                      </td>
-                      <td>{selectedCustomer.phoneNo}</td>
-                      <td>
-                        {selectedCustomer.approved
-                          ? "Approved"
-                          : "Pending"}
-                      </td>
-                    </tr>
-                  )}
-                </tbody> */}
                 
               </table>
             ) : searchText ? (
@@ -749,7 +599,7 @@ export default function AdminDashboard() {
           </>
         )}
 
-        {activeTab === "payments" && (
+        {/* {activeTab === "payments" && (
           <>
             <div className="header-row">
               <div>
@@ -819,6 +669,375 @@ export default function AdminDashboard() {
               </div>
             )}
           </>
+        )} */}
+
+        {activeTab === "payments" && (
+
+          <div>
+
+            <h1 className="admin-page-title">
+              Payments
+            </h1>
+
+            <input
+              type="text"
+              placeholder="Search customer..."
+              className="search-box"
+              value={paymentSearch}
+              onChange={(e) =>
+                searchPaymentCustomer(
+                  e.target.value
+                )
+              }
+            />
+
+            {paymentCustomers.length > 0 && (
+
+              <div className="suggestions">
+                {paymentCustomers.map(
+                  customer => (
+                    <div
+                      key={customer.customerId}
+                      className="suggestion-item"
+                      onClick={() =>
+                        selectCustomerPayments(
+                          customer
+                        )
+                      }
+                    >
+                      {customer.firstname}
+                      {" "}
+                      {customer.lastname}
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+
+            <br />
+
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                alignItems: "center"
+              }}
+            >
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) =>
+                  setFromDate(
+                    e.target.value
+                  )
+                }
+              />
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) =>
+                  setToDate(
+                    e.target.value
+                  )
+                }
+              />
+
+              <button
+                className="btn-primary"
+                onClick={applyDateFilter}
+              >
+                Filter
+              </button>
+
+              <button
+                className="btn-primary"
+                onClick={last15Days}
+              >
+                Last 15 Days
+              </button>
+            </div>
+
+            <br />
+
+            {/* <button
+              className="btn-primary"
+              onClick={() =>
+                setShowAddPayment(
+                  !showAddPayment
+                )
+              }
+            >
+              Add Payment
+            </button> */}
+            <button
+              className="btn-primary"
+              disabled={!selectedPaymentCustomer}
+              onClick={() =>
+                setShowAddPayment(
+                  !showAddPayment
+                )
+              }
+            >
+              Add Payment
+            </button>
+
+            {
+              showAddPayment && (
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    marginBottom: "20px"
+                  }}
+                >
+
+                  <input
+                    type="number"
+                    placeholder="Amount"
+                    value={newPayment.amount}
+                    onChange={(e) =>
+                      setNewPayment({
+                        ...newPayment,
+                        amount: e.target.value
+                      })
+                    }
+                  />
+
+                  <select
+                    value={newPayment.type}
+                    onChange={(e) =>
+                      setNewPayment({
+                        ...newPayment,
+                        type: e.target.value
+                      })
+                    }
+                  >
+                    <option value="ADVANCE">
+                      ADVANCE
+                    </option>
+
+                    <option value="INSTALLMENT">
+                      INSTALLMENT
+                    </option>
+
+                    <option value="FINAL">
+                      FINAL
+                    </option>
+                  </select>
+
+                  <select
+                    value={newPayment.way}
+                    onChange={(e) =>
+                      setNewPayment({
+                        ...newPayment,
+                        way: e.target.value
+                      })
+                    }
+                  >
+                    <option value="UPI">
+                      UPI
+                    </option>
+
+                    <option value="ONLINE">
+                      ONLINE
+                    </option>
+
+                    <option value="CASH">
+                      CASH
+                    </option>
+
+                    <option value="CHEQUE">
+                      CHEQUE
+                    </option>
+                  </select>
+
+                  <input
+                    type="date"
+                    value={newPayment.paymentDate}
+                    onChange={(e) =>
+                      setNewPayment({
+                        ...newPayment,
+                        paymentDate:
+                          e.target.value
+                      })
+                    }
+                  />
+
+                  <button
+                    className="btn-primary"
+                    onClick={handleAddPayment}
+                  >
+                    Save
+                  </button>
+
+                </div>
+
+              )
+            }
+            <br />
+            <br />
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Amount</th>
+                  <th>Type</th>
+                  <th>Way</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {payments.map(payment => (
+                  <tr key={payment.paymentId}>
+                    <td>
+
+                      {editingPayment ===
+                        payment.paymentId ? (
+                        <input
+                          value={
+                            paymentForm.amount
+                          }
+                          onChange={(e) =>
+                            setPaymentForm({
+                              ...paymentForm,
+                              amount:
+                                e.target.value
+                            })
+                          }
+                        />
+                      ) : (
+                        payment.amount
+                      )}
+
+                    </td>
+
+                    {/* <td>{payment.type}</td>
+                    <td>{payment.way}</td>
+
+                    <td>
+                      {payment.paymentDate}
+                    </td> */}
+
+                    <td>
+                      {editingPayment === payment.paymentId ? (
+                        <select
+                          value={paymentForm.type}
+                          onChange={(e) =>
+                            setPaymentForm({
+                              ...paymentForm,
+                              type: e.target.value
+                            })
+                          }
+                        >
+                          <option value="ADVANCE">
+                            ADVANCE
+                          </option>
+                          <option value="INSTALLMENT">
+                            INSTALLMENT
+                          </option>
+                          <option value="FINAL">
+                            FINAL
+                          </option>
+                        </select>
+                      ) : (
+                        payment.type
+                      )}
+                    </td>
+
+                    <td>
+                      {editingPayment === payment.paymentId ? (
+                        <select
+                          value={paymentForm.way}
+                          onChange={(e) =>
+                            setPaymentForm({
+                              ...paymentForm,
+                              way: e.target.value
+                            })
+                          }
+                        >
+                          <option value="CASH">
+                            CASH
+                          </option>
+                          <option value="UPI">
+                            UPI
+                          </option>
+                          <option value="BANK">
+                            ONLINE
+                          </option>
+                          <option value="CHEQUE">
+                            CHEQUE
+                          </option>
+                        </select>
+                      ) : (
+                        payment.way
+                      )}
+                    </td>
+
+                    <td>
+                      {editingPayment === payment.paymentId ? (
+                        <input
+                          type="date"
+                          value={paymentForm.paymentDate}
+                          onChange={(e) =>
+                            setPaymentForm({
+                              ...paymentForm,
+                              paymentDate: e.target.value
+                            })
+                          }
+                        />
+                      ) : (
+                        payment.paymentDate
+                          ? new Date(
+                            payment.paymentDate
+                          ).toLocaleDateString()
+                          : "-"
+                      )}
+                    </td>
+
+                    <td>
+                      {editingPayment ===
+                        payment.paymentId ? (
+                        <button
+                          className="btn-primary"
+                          onClick={() =>
+                            savePayment(
+                              payment.paymentId
+                            )
+                          }
+                        >
+                          Save
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-primary"
+                          onClick={() =>
+                            editPayment(
+                              payment
+                            )
+                          }
+                        >
+                          Edit
+                        </button>
+                      )}
+                      <button
+                        className="btn-primary"
+                        onClick={() =>
+                          removePayment(
+                            payment.paymentId
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {activeTab === "materials" && (

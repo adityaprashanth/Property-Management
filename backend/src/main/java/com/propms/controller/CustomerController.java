@@ -70,11 +70,6 @@ import java.util.List;
 // })
 public class CustomerController {
 
-    // private final CustomerService customerService;
-
-    // public CustomerController(CustomerService customerService) {
-    //     this.customerService = customerService;
-    // }
 
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
@@ -114,34 +109,6 @@ public class CustomerController {
                 customerService.update(id, updates)
         );
     }
-
-    // @PutMapping("/{id}/deactivate")
-    // public ResponseEntity<Customer> deactivateCustomer(
-    //         @PathVariable Integer id
-    // ) {
-
-    //     Customer customer =
-    //             customerRepository.findById(id)
-    //                     .orElseThrow();
-
-    //     customer.setStatus("INACTIVE");
-
-    //     return ResponseEntity.ok(
-    //             customerRepository.save(customer)
-    //     );
-    // }
-
-    // @PutMapping("/{id}/deactivate")
-    // public ResponseEntity<?> deactivateCustomer(
-    //         @PathVariable Integer id) {
-
-    //     Customer customer =
-    //             customerRepository.findById(id)
-    //                     .orElseThrow();
-    //     customer.setStatus("Inactive");
-    //     customerRepository.save(customer);
-    //     return ResponseEntity.ok().build();
-    // }
 
     @PutMapping("/{id}/deactivate")
     public ResponseEntity<?> deactivateCustomer(

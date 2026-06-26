@@ -88,32 +88,3 @@ public interface CustomerRepository
     """)
     Long countActualCustomers();
 }
-
-// package com.propms.repository;
-
-// import com.propms.entity.Customer;
-// import org.springframework.data.jpa.repository.JpaRepository;
-// import org.springframework.data.jpa.repository.Query;
-// import org.springframework.stereotype.Repository;
-
-// import java.util.List;
-
-// @Repository
-// public interface CustomerRepository
-//         extends JpaRepository<Customer, Integer> {
-
-//     List<Customer>
-//     findByFirstnameContainingIgnoreCaseOrLastnameContainingIgnoreCase(
-//             String firstname,
-//             String lastname
-//     );
-
-//     List<Customer> findByStatus(String status);
-
-//     @Query("""
-//         SELECT COUNT(c)
-//         FROM Customer c
-//         WHERE LOWER(c.firstname) <> 'admin'
-//     """)
-//     Long countActualCustomers();
-// }

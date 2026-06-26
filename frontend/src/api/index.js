@@ -15,19 +15,8 @@ export const login  = (data) => api.post("/auth/login",  data);
 export const getCustomer    = (id)       => api.get(`/customers/${id}`);
 export const updateCustomer = (id, data) => api.put(`/customers/${id}`, data);
 
-// export const createCustomer = (customer) => api.post("/auth/admin/create-customer", customer);
-// export const createCustomer = (customer) => api.post("/admin/customers", customer);
-
-// export const searchCustomer = (name) => api.get(`/customers/search?name=${name}`);
-
-// export const searchCustomer = (keyword) => api.get(`/customers/search?keyword=${keyword}`);
-
 export const searchCustomer = (name) =>
     api.get(`/customers/search?name=${name}`);
-
-// export const searchCustomer = (name) => api.get(`/api/customers/search?name=${name}`);
-
-// export const createCustomer = (data) => api.post("/api/admin/customers", data);
 
 export const createCustomer = (data) =>
     api.post("/admin/customers", data);
@@ -35,30 +24,11 @@ export const createCustomer = (data) =>
 export const getPayments = () =>
   api.get("/payments");
 
-export const getCustomerPayments = (customerId) =>
-  api.get(`/payments/customer/${customerId}`);
-
-
-// export const uploadDocument = (
-//   customerId,
-//   file
-// ) => {
-
-//   const formData = new FormData();
-
-//   formData.append("file", file);
-
-//   return api.post(
-//     `/documents/upload/${customerId}`,
-//     formData,
-//     {
-//       headers: {
-//         "Content-Type":
-//           "multipart/form-data"
-//       }
-//     }
-//   );
-// };
+export const getCustomerPayments =
+  (customerId) =>
+    api.get(
+      `/payments/customer/${customerId}`
+    );
 
 export const uploadDocuments = (
   customerId,
@@ -100,18 +70,6 @@ export const deleteDocument = (
     `/documents/${documentId}`
   );
 
-// export const getCustomerDetails = (id) =>
-//   api.get(`/customers/${id}`);
-
-// export const getCustomerPhotos = (id) =>
-//   api.get(`/photos/customer/${id}`);
-
-// export const getCustomerStage = (id) =>
-//   api.get(`/stages/customer/${id}`);
-
-// export const getCustomerMaterials = (id) =>
-//   api.get(`/materials/customer/${id}`);
-
 export const getCustomerStage = (customerId) =>
   api.get(`/stages/customer/${customerId}`);
 
@@ -135,3 +93,103 @@ export const getInactiveCustomers = () =>
 
 export const activateCustomer = (id) =>
   api.put(`/customers/${id}/activate`);
+
+
+export const updatePayment = (
+  id,
+  payment
+) =>
+  api.put(
+    `/payments/${id}`,
+    payment
+  );
+
+export const deletePayment = (
+  id
+) =>
+  api.delete(
+    `/payments/${id}`
+  );
+
+export const addPayment = (payment) =>
+  api.post("/payments", payment);
+
+export const updateStage = (
+  customerId,
+  stageId
+) =>
+  api.put(
+    `/stages/${customerId}`,
+    {
+      stageId: Number(stageId)
+    }
+  );
+
+export const deletePhoto = (id) =>
+  api.delete(`/photos/${id}`);
+
+export const filterPayments = (
+  customerId,
+  fromDate,
+  toDate
+) =>
+  api.get(
+    "/payments/filter",
+    {
+      params: {
+        customerId,
+        fromDate,
+        toDate
+      }
+    }
+  );
+
+export const uploadPhotos =
+  (customerId, files) => {
+
+    const formData =
+      new FormData();
+
+    files.forEach(file => {
+      formData.append(
+        "files",
+        file
+      );
+    });
+
+    return api.post(
+      `/photos/upload/${customerId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type":
+            "multipart/form-data"
+        }
+      }
+    );
+  };
+
+export const addMaterial = (material) =>
+  api.post("/materials", material);
+
+export const updateMaterial = (
+  id,
+  material
+) =>
+  api.put(
+    `/materials/${id}`,
+    material
+  );
+
+export const deleteMaterialApi = (
+  id
+) =>
+  api.delete(
+    `/materials/${id}`
+  );
+
+export const getStages = () =>
+  api.get("/stages");
+
+export const deletePaymentApi = (id) =>
+  api.delete(`/payments/${id}`);

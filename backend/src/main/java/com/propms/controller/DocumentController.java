@@ -211,4 +211,17 @@ public class DocumentController {
 
         }
     }
+
+    // @PostMapping("/upload")
+    // public CustomerDocument upload(
+    //         @RequestParam Integer customerId,
+    //         @RequestParam MultipartFile file
+    // )
+
+    // @DeleteMapping("/{id}")
+    // public void deleteDocument(
+    //         @PathVariable Integer id
+    // ) {
+    //     repository.deleteById(id);
+    // }
 }

@@ -27,4 +27,41 @@ public class MaterialUsageController {
                 customerId
         );
     }
+
+    @PostMapping
+    public MaterialUsage addMaterial(
+            @RequestBody MaterialUsage m) {
+
+        return repository.save(m);
+    }
+
+    @PutMapping("/{id}")
+    public MaterialUsage updateMaterial(
+            @PathVariable Integer id,
+            @RequestBody MaterialUsage updates
+    ) {
+        MaterialUsage m =
+            repository
+            .findById(id)
+            .orElseThrow();
+
+        m.setMaterialName(
+            updates.getMaterialName()
+        );
+        m.setQuantity(
+            updates.getQuantity()
+        );
+        m.setUnit(
+            updates.getUnit()
+        );
+        return repository.save(m);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteMaterial(
+            @PathVariable Integer id
+    ) {
+        repository.deleteById(id);
+    }
+
 }
